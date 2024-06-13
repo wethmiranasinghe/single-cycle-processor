@@ -1,0 +1,20 @@
+# Set language for specific file types
+*.js linguist-language=JavaScript
+*.ts linguist-language=TypeScript
+*.cs linguist-language=C#
+*.html linguist-language=HTML
+*.css linguist-language=CSS
+*.py linguist-language=Python
+*.java linguist-language=Java
+*.cpp linguist-language=C++
+*.h linguist-language=C
+*.md linguist-language=Markdown
+*.sh linguist-language=Shell
+*.v linguist-language=Verilog
+*.sv linguist-language=SystemVerilog
+
+# Set custom handling for binary files
+*.png binary
+*.jpg binary
+*.gif binary
+*.pdf binary
