@@ -1,0 +1,55 @@
+#! /c/Source/iverilog-install/bin/vvp
+:ivl_version "12.0 (devel)" "(s20150603-1539-g2693dd32b)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision - 10;
+:vpi_module "C:\iverilog\lib\ivl\system.vpi";
+:vpi_module "C:\iverilog\lib\ivl\vhdl_sys.vpi";
+:vpi_module "C:\iverilog\lib\ivl\vhdl_textio.vpi";
+:vpi_module "C:\iverilog\lib\ivl\v2005_math.vpi";
+:vpi_module "C:\iverilog\lib\ivl\va_math.vpi";
+S_0000025cc2be6910 .scope module, "full_adder" "full_adder" 2 10;
+ .timescale -9 -10;
+    .port_info 0 /INPUT 1 "firstBit";
+    .port_info 1 /INPUT 1 "secondBit";
+    .port_info 2 /INPUT 1 "Cin";
+    .port_info 3 /OUTPUT 1 "Sum";
+    .port_info 4 /OUTPUT 1 "Cout";
+o0000025cc2be7068 .functor BUFZ 1, C4<z>; HiZ drive
+o0000025cc2be7128 .functor BUFZ 1, C4<z>; HiZ drive
+L_0000025cc2b982b0 .functor XOR 1, o0000025cc2be7068, o0000025cc2be7128, C4<0>, C4<0>;
+o0000025cc2be6fa8 .functor BUFZ 1, C4<z>; HiZ drive
+L_0000025cc2b98990 .functor XOR 1, L_0000025cc2b982b0, o0000025cc2be6fa8, C4<0>, C4<0>;
+L_0000025cc2b99420 .functor AND 1, o0000025cc2be7068, o0000025cc2be7128, C4<1>, C4<1>;
+L_0000025cc2b974e0 .functor AND 1, o0000025cc2be7068, o0000025cc2be6fa8, C4<1>, C4<1>;
+L_0000025cc2b97640 .functor AND 1, o0000025cc2be7128, o0000025cc2be6fa8, C4<1>, C4<1>;
+L_0000025cc2b9bf30 .functor OR 1, L_0000025cc2b99420, L_0000025cc2b974e0, C4<0>, C4<0>;
+L_0000025cc2be3600 .functor OR 1, L_0000025cc2b9bf30, L_0000025cc2b97640, C4<0>, C4<0>;
+v0000025cc2b99380_0 .net "Cin", 0 0, o0000025cc2be6fa8;  0 drivers
+v0000025cc2b96fa0_0 .net "Cout", 0 0, L_0000025cc2be3600;  1 drivers
+v0000025cc2b988f0_0 .net "Sum", 0 0, L_0000025cc2b98990;  1 drivers
+v0000025cc2b98210_0 .net *"_ivl_10", 0 0, L_0000025cc2b9bf30;  1 drivers
+v0000025cc2be6c30_0 .net "firstBit", 0 0, o0000025cc2be7068;  0 drivers
+v0000025cc2be6cd0_0 .net "firstBit_AND_Cin", 0 0, L_0000025cc2b974e0;  1 drivers
+v0000025cc2b9bd60_0 .net "firstBit_AND_secondBit", 0 0, L_0000025cc2b99420;  1 drivers
+v0000025cc2b9be00_0 .net "firstBit_xor_secondBit", 0 0, L_0000025cc2b982b0;  1 drivers
+v0000025cc2be2fa0_0 .net "secondBit", 0 0, o0000025cc2be7128;  0 drivers
+v0000025cc2be2820_0 .net "secondBit_AND_Cin", 0 0, L_0000025cc2b97640;  1 drivers
+S_0000025cc2be6aa0 .scope module, "half_adder" "half_adder" 2 30;
+ .timescale -9 -10;
+    .port_info 0 /INPUT 1 "firstBit";
+    .port_info 1 /INPUT 1 "secondBit";
+    .port_info 2 /OUTPUT 1 "Sum";
+    .port_info 3 /OUTPUT 1 "Carry";
+o0000025cc2be72d8 .functor BUFZ 1, C4<z>; HiZ drive
+o0000025cc2be7308 .functor BUFZ 1, C4<z>; HiZ drive
+L_0000025cc2be4070 .functor XOR 1, o0000025cc2be72d8, o0000025cc2be7308, C4<0>, C4<0>;
+L_0000025cc2be3d60 .functor AND 1, o0000025cc2be72d8, o0000025cc2be7308, C4<1>, C4<1>;
+v0000025cc2be3040_0 .net "Carry", 0 0, L_0000025cc2be3d60;  1 drivers
+v0000025cc2be2d20_0 .net "Sum", 0 0, L_0000025cc2be4070;  1 drivers
+v0000025cc2be26e0_0 .net "firstBit", 0 0, o0000025cc2be72d8;  0 drivers
+v0000025cc2be2c80_0 .net "secondBit", 0 0, o0000025cc2be7308;  0 drivers
+# The file index is used to find the file name in the following table.
+:file_names 3;
+    "N/A";
+    "<interactive>";
+    "adder.v";
