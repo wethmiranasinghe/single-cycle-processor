@@ -6,6 +6,8 @@
 `include "cpu.v"
 `include "dmem.v"
 `include "data_cache.v"
+`include "imem.v"
+`include "instruction_cache.v"
 
 module cpu_tb;
 
@@ -18,41 +20,21 @@ module cpu_tb;
     wire [7:0] CPU_READDATA, CPU_WRITEDATA, CPU_ADDRESS;
     wire [31:0] MEM_WRITEDATA, MEM_READDATA;
     wire [5:0] MEM_ADDRESS;
+    
+    wire INSTRUCTION_MEM_READ, INSTRUCTION_MEM_BUSYWAIT;
+    wire INSTRUCTION_BUSYWAIT;
+    wire [5:0] INSTRUCTION_MEM_ADDRESS;
+    wire [127:0] INSTRUCTION_MEM_INSTRUCTION;
 
-    /* 
-    ------------------------
-     SIMPLE INSTRUCTION MEM
-    ------------------------
-    */
-    
-    // TODO: Initialize an array of registers (8x1024) named 'instr_mem' to be used as instruction memory
-    
-    // TODO: Create combinational logic to support CPU instruction fetching, given the Program Counter(PC) value 
-    //       (make sure you include the delay for instruction fetching here)
-    reg [7:0] instr_mem [1023:0];
-    assign #2 INSTRUCTION = {instr_mem[PC+3], instr_mem[PC+2], instr_mem[PC+1], instr_mem[PC]};
 
-    initial
-    begin
-        // Initialize instruction memory with the set of instructions you need execute on CPU
-        
-        // METHOD 1: manually loading instructions to instr_mem
-        //{instr_mem[10'd3], instr_mem[10'd2], instr_mem[10'd1], instr_mem[10'd0]} = 32'b00000000000001000000000000000101;
-        //{instr_mem[10'd7], instr_mem[10'd6], instr_mem[10'd5], instr_mem[10'd4]} = 32'b00000000000000100000000000001001;
-        //{instr_mem[10'd11], instr_mem[10'd10], instr_mem[10'd9], instr_mem[10'd8]} = 32'b00000010000001100000010000000010;
-        
-        // METHOD 2: loading instr_mem content from instr_mem.mem file
-        $readmemb("instr_mem.mem", instr_mem);
-    end
-    
     /* 
     -----
      CPU
     -----
     */
     //Taking an instance of CPU module
-    cpu mycpu(PC, INSTRUCTION, CLK, RESET, CPU_READ, CPU_WRITE, CPU_ADDRESS, CPU_WRITEDATA, CPU_READDATA, CPU_BUSYWAIT);
-    
+    cpu mycpu(PC, INSTRUCTION, CLK, RESET, CPU_READ, CPU_WRITE, CPU_ADDRESS, CPU_WRITEDATA, CPU_READDATA, CPU_BUSYWAIT, INSTRUCTION_BUSYWAIT);
+      
     /* 
     -----
      DATA CACHE
@@ -68,6 +50,21 @@ module cpu_tb;
     */
     //Taking an instance of data memory module
     data_memory my_DataMem(CLK, RESET, MEM_READ, MEM_WRITE, MEM_ADDRESS, MEM_WRITEDATA, MEM_READDATA, MEM_BUSYWAIT);
+    
+    /* 
+    -----
+    INSTRUCTION CACHE
+    -----
+    */
+    //Taking an instance of instruction cache module
+    instruction_cache my_InstructionCache(CLK, RESET, PC[9:0], INSTRUCTION, INSTRUCTION_BUSYWAIT, INSTRUCTION_MEM_READ, INSTRUCTION_MEM_ADDRESS,INSTRUCTION_MEM_INSTRUCTION, INSTRUCTION_MEM_BUSYWAIT);
+    /* 
+    -----
+     INSTRUCTION MEMORY
+    -----
+    */
+    //Taking an instance of instruction memory module
+    instruction_memory my_InstructionMem(CLK, INSTRUCTION_MEM_READ, INSTRUCTION_MEM_ADDRESS, INSTRUCTION_MEM_INSTRUCTION, INSTRUCTION_MEM_BUSYWAIT);
 
     initial
     begin
@@ -84,7 +81,7 @@ module cpu_tb;
 		#5
 		RESET = 1'b0;
         // finish simulation after some time
-        #1000
+        #5000
         $finish;
         
     end

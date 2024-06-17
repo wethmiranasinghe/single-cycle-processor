@@ -11,11 +11,11 @@ Group 32
 `include "flowcontrol.v"
 
 
-module cpu(PC, INSTRUCTION, CLK, RESET, READ_MEMORY, WRITE_MEMORY, ADDRESS, WRITEDATA, READDATA, BUSYWAIT);
+module cpu(PC, INSTRUCTION, CLK, RESET, READ_MEMORY, WRITE_MEMORY, ADDRESS, WRITEDATA, READDATA, BUSYWAIT, INSTRUCTION_BUSYWAIT);
 
 	//Declaring input ports
 	input [31:0] INSTRUCTION;
-	input CLK, RESET, BUSYWAIT;
+	input CLK, RESET, BUSYWAIT, INSTRUCTION_BUSYWAIT;
 	input [7:0] READDATA;
 	
 	//Declaring output ports
@@ -49,6 +49,7 @@ module cpu(PC, INSTRUCTION, CLK, RESET, READ_MEMORY, WRITE_MEMORY, ADDRESS, WRIT
 	//reg to store the PC value
 	wire [31:0] PCFinal;
 	reg [31:0] PCAdd;
+	wire [31:0] newPC;
 
 	// registers for flow control
 	reg JUMP, BRANCH;
@@ -83,6 +84,8 @@ module cpu(PC, INSTRUCTION, CLK, RESET, READ_MEMORY, WRITE_MEMORY, ADDRESS, WRIT
     mux32bit MUX32bit(PCFinal, PCAdd, TARGET, flowselect);
 	// Taking an instance of the mux which selcts which data to be sent to the register to write
 	mux my_writeDataToReg(ALURESULT, READDATA, WRITEDATA_TOREG_SELECT,WRITEDATA_REG);
+	// Changing PC value using BUSYWAIT signal
+	mux32bit busywaitMUX(newPC, PCFinal, PC, (BUSYWAIT | INSTRUCTION_BUSYWAIT));
 
 
 	//Assigning values in the Data memory
@@ -98,8 +101,8 @@ module cpu(PC, INSTRUCTION, CLK, RESET, READ_MEMORY, WRITE_MEMORY, ADDRESS, WRIT
 			#1  // giving a one time unit delay for simulation
 			PC = 0;		//If RESET signal is HIGH, set PC to zero
 		end
-		else if (~BUSYWAIT) begin
-			#1 PC = PCFinal;		//Else, write new PC value
+		else begin
+			#1 PC = newPC;
 		end
 	end
 
